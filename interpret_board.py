@@ -25,25 +25,30 @@ for row in range(9):
         cell_image = cv2.resize(cell_image, (28, 28))
         min_value = np.min(cell_image)
         max_value = np.max(cell_image)
+
+
         converted_image = cv2.normalize(cell_image, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
         gray_image = cv2.cvtColor(converted_image, cv2.COLOR_BGR2GRAY)
-        #blurred_image = cv2.GaussianBlur(gray_image, (7, 7), 3)
+        gray_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
         cell_image = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+        cell_image = cell_image.reshape(1, 28, 28)
+
 
         digit_probabilities = digit_recognition_model.predict(cell_image)
         digit = np.argmax(digit_probabilities)
         print (digit)
-        #cv2.imshow("Cell Image", cell_image)
-        #cv2.waitKey(0)
+        cell_image = cell_image.reshape(28, 28, 1)
+        cv2.imshow("Cell Image", cell_image)
+        cv2.waitKey(0)
         #cv2.destroyAllWindows()
 
         cell_images.append(cell_image)
 
 cell_images = np.array(cell_images)
 
-cell_images = cell_images.reshape(-1, 28, 28)
+#cell_images = cell_images.reshape(-1, 28, 28)
 
-cell_images = cell_images / 255.0
+#cell_images = cell_images / 255.0
 
 #digit_probabilities = digit_recognition_model.predict(cell_images)
 
