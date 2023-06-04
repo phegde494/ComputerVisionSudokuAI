@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-
+import imageio
+from tensorflow import keras
 # At this stage, the image is in the same directory as this program
 # So we can load the image using opencv's imread() function.
 
@@ -75,8 +76,58 @@ perspective_matrix = cv2.getPerspectiveTransform(corner_points, target_points)
 
 # Apply the perspective transform to the original image using the matrix and the specified dimensions
 final_processed_image = cv2.warpPerspective(image, perspective_matrix, (450, 450))
-cv2.imwrite('processed_image.jpg', final_processed_image)
 
+final_processed_image = cv2.cvtColor(final_processed_image, cv2.COLOR_BGR2GRAY)
+final_processed = cv2.GaussianBlur(final_processed_image, (7, 7), 3)
+_, final_processed_image = cv2.threshold(final_processed_image, 128, 255, cv2.THRESH_BINARY_INV)
+#cv2.imwrite('processed_image.jpg', final_processed_image)
+#imageio.imwrite('processed_image.jpg', final_processed_image)
 cv2.imshow("Sudoku Grid Detection", final_processed_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+# Load the digit recognition model trained and saved in train_digit_recognition_model.py
+digit_recognition_model = keras.models.load_model("trained_digit_model.h5")
+
+# Size of each cell --> helps us split the grid into 9 rows & 9 cols
+cell_size = final_processed_image.shape[0] // 9
+
+cell_images = []
+
+# Iterate over each row and col of the Sudoku grid (which is just an image at this point)
+for row in range(9):
+    for col in range(9):
+        # Calculate top left corner coords of the cell
+        x = col * cell_size
+        y = row * cell_size
+
+        # Scrape the cell image from the board
+        cell_image = final_processed_image[y:y+cell_size, x:x+cell_size]
+        print (cell_image.shape)
+        cell_image = cv2.resize(cell_image, (28, 28))
+        print (cell_image.shape)
+        #min_value = np.min(cell_image)
+        #max_value = np.max(cell_image)
+
+
+        #converted_image = cv2.normalize(cell_image, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        
+        #cell_image = cv2.cvtColor(cell_image, cv2.COLOR_RGB2GRAY)
+        #print(cell_image.shape)
+        #cell_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+        #cell_image = cv2.adaptiveThreshold(cell_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+        cell_image = cell_image.reshape(1, 28, 28)
+        
+
+        digit_probabilities = digit_recognition_model.predict(cell_image)
+        digit = np.argmax(digit_probabilities)
+        print (digit)
+        cell_image = cell_image.reshape(28, 28, 1)
+        cv2.imshow("Cell Image", cell_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        cell_images.append(cell_image)
+
+cell_images = np.array(cell_images)
