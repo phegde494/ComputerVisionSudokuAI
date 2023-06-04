@@ -5,7 +5,7 @@ from tensorflow import keras
 # At this stage, the image is in the same directory as this program
 # So we can load the image using opencv's imread() function.
 
-image = cv2.imread("onlinesudoku2.jpg")
+image = cv2.imread("sudokuimg2.jpg")
 
 # Next, we need to apply some noise reduction techniques to this image.
 # This is necessary in order for the contour-finding algorithm applied in later steps to be effective.
@@ -78,7 +78,11 @@ perspective_matrix = cv2.getPerspectiveTransform(corner_points, target_points)
 final_processed_image = cv2.warpPerspective(image, perspective_matrix, (450, 450))
 
 final_processed_image = cv2.cvtColor(final_processed_image, cv2.COLOR_BGR2GRAY)
-final_processed = cv2.GaussianBlur(final_processed_image, (7, 7), 3)
+#final_processed_image = cv2.bitwise_not(final_processed_image)
+
+
+#final_processed_image = cv2.GaussianBlur(final_processed_image, (7, 7), 3)
+
 _, final_processed_image = cv2.threshold(final_processed_image, 128, 255, cv2.THRESH_BINARY_INV)
 #cv2.imwrite('processed_image.jpg', final_processed_image)
 #imageio.imwrite('processed_image.jpg', final_processed_image)
@@ -93,8 +97,25 @@ digit_recognition_model = keras.models.load_model("trained_digit_model.h5")
 # Size of each cell --> helps us split the grid into 9 rows & 9 cols
 cell_size = final_processed_image.shape[0] // 9
 
-cell_images = []
+ex_img2 = cv2.imread('num7.jpg')
 
+ex_img2 = cv2.cvtColor(ex_img2, cv2.COLOR_BGR2GRAY)
+ex_img2 = cv2.resize(ex_img2, (28, 28))
+ex_img2 = ex_img2.reshape(1, 28, 28)
+
+print (ex_img2.shape)
+
+digit_probabilities2 = digit_recognition_model.predict(ex_img2)
+
+print(digit_probabilities2)
+
+digit2 = np.argmax(digit_probabilities2)
+
+print("Classified digit is: " + str(digit2))
+
+
+cell_images = []
+'''
 # Iterate over each row and col of the Sudoku grid (which is just an image at this point)
 for row in range(9):
     for col in range(9):
@@ -105,6 +126,20 @@ for row in range(9):
         # Scrape the cell image from the board
         cell_image = final_processed_image[y:y+cell_size, x:x+cell_size]
         print (cell_image.shape)
+
+        # Calculate the border thickness as a percentage of the image size
+        border_percentage = 0.1  # 1/10th of the image size
+        border_thickness = int(min(cell_image.shape[:2]) * border_percentage)
+
+        # Calculate the crop dimensions
+        x = border_thickness
+        y = border_thickness
+        width = cell_image.shape[1] - 2 * border_thickness
+        height = cell_image.shape[0] - 2 * border_thickness
+
+        # Crop the image to remove the borders
+        cell_image = cell_image[y:y+height, x:x+width]
+
         cell_image = cv2.resize(cell_image, (28, 28))
         print (cell_image.shape)
         #min_value = np.min(cell_image)
@@ -119,8 +154,9 @@ for row in range(9):
         #cell_image = cv2.adaptiveThreshold(cell_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
         cell_image = cell_image.reshape(1, 28, 28)
         
-
+        print (cell_image.shape)
         digit_probabilities = digit_recognition_model.predict(cell_image)
+        print (digit_probabilities)
         digit = np.argmax(digit_probabilities)
         print (digit)
         cell_image = cell_image.reshape(28, 28, 1)
@@ -131,3 +167,4 @@ for row in range(9):
         cell_images.append(cell_image)
 
 cell_images = np.array(cell_images)
+'''
