@@ -21,4 +21,5 @@ Meanwhile, a digit classification model is trained on the MNIST data set (achiev
 
 This model is then used to identify the digit (or lack of one) in each cell's image and place them into a 9x9 matrix of integers.
 
-Finally, a sudoku solving algorithm utilizing backtracking is applied to the matrix, yielding a solution for the puzzle.
+Finally, a sudoku solving algorithm utilizing backtracking is applied to the matrix, yielding a solution for the puzzle.  
+aa
