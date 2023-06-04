@@ -6,7 +6,7 @@
 
 
 
-##Exact Methodology Below:
+**Exact Methodology Below:**
 __________________________
 
 The AI uses image processing techniques such as greyscaling, Gaussian blurring, adaptive thresholding to reduce noise and enhance contour detection.
