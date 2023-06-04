@@ -1,8 +1,8 @@
 # ComputerVisionSudokuAI
 
-Input an image of a sudoku puzzle (handwritten or a screenshot of your online game).
+Input an image of a sudoku puzzle (handwritten or a screenshot of your online game), and this AI will output a solution to the puzzle.
 
-This AI uses image processing techniques such as greyscaling, Gaussian blurring, adaptive thresholding to reduce noise and enhance contour detection.
+The AI uses image processing techniques such as greyscaling, Gaussian blurring, adaptive thresholding to reduce noise and enhance contour detection.
 
 It then applies a four point perspective transform and scales the image appropriately. Next, it splits the processed image into a 9x9 grid of cells where each cell contains a digit.
 
