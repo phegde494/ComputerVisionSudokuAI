@@ -3,7 +3,9 @@
 **Input an image of a sudoku puzzle (handwritten or a screenshot of your online game), and this AI will output a solution to the puzzle.**
 
 **Deep Learning & Computer Vision used to convert image to a 9x9 matrix of integers, and a backtracking algo is used to then solve the puzzle.**
-
+  
+    
+    
 
 
 **Exact Methodology Below:**
