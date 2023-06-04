@@ -4,7 +4,7 @@ import numpy as np
 # At this stage, the image is in the same directory as this program
 # So we can load the image using opencv's imread() function.
 
-image = cv2.imread("sudokuimg2.jpg")
+image = cv2.imread("onlinesudoku2.jpg")
 
 # Next, we need to apply some noise reduction techniques to this image.
 # This is necessary in order for the contour-finding algorithm applied in later steps to be effective.

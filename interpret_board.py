@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow import keras
 
 # Load the processed image generated in process_img.py in gray scale.
-processed_image = cv2.imread('processed_image.jpg', 0)
+processed_image = cv2.imread('processed_image.jpg')
 processed_image = processed_image / 255.0
 # Load the digit recognition model trained and saved in train_digit_recognition_model.py
 digit_recognition_model = keras.models.load_model("trained_digit_model.h5")
@@ -23,8 +23,16 @@ for row in range(9):
         # Scrape the cell image from the board
         cell_image = processed_image[y:y+cell_size, x:x+cell_size]
         cell_image = cv2.resize(cell_image, (28, 28))
-        cell_image = cv2.threshold(cell_image, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+        min_value = np.min(cell_image)
+        max_value = np.max(cell_image)
+        converted_image = cv2.normalize(cell_image, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        gray_image = cv2.cvtColor(converted_image, cv2.COLOR_BGR2GRAY)
+        #blurred_image = cv2.GaussianBlur(gray_image, (7, 7), 3)
+        cell_image = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
+        digit_probabilities = digit_recognition_model.predict(cell_image)
+        digit = np.argmax(digit_probabilities)
+        print (digit)
         #cv2.imshow("Cell Image", cell_image)
         #cv2.waitKey(0)
         #cv2.destroyAllWindows()
