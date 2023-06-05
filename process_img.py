@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import imageio
 from tensorflow import keras
 # At this stage, the image is in the same directory as this program
 # So we can load the image using opencv's imread() function.
@@ -78,14 +77,9 @@ perspective_matrix = cv2.getPerspectiveTransform(corner_points, target_points)
 final_processed_image = cv2.warpPerspective(image, perspective_matrix, (450, 450))
 
 final_processed_image = cv2.cvtColor(final_processed_image, cv2.COLOR_BGR2GRAY)
-#final_processed_image = cv2.bitwise_not(final_processed_image)
-
-
-#final_processed_image = cv2.GaussianBlur(final_processed_image, (7, 7), 3)
 
 _, final_processed_image = cv2.threshold(final_processed_image, 128, 255, cv2.THRESH_BINARY_INV)
-#cv2.imwrite('processed_image.jpg', final_processed_image)
-#imageio.imwrite('processed_image.jpg', final_processed_image)
+
 cv2.imshow("Sudoku Grid Detection", final_processed_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
@@ -97,25 +91,8 @@ digit_recognition_model = keras.models.load_model("trained_digit_model.h5")
 # Size of each cell --> helps us split the grid into 9 rows & 9 cols
 cell_size = final_processed_image.shape[0] // 9
 
-ex_img2 = cv2.imread('num7.jpg')
+digits = []
 
-ex_img2 = cv2.cvtColor(ex_img2, cv2.COLOR_BGR2GRAY)
-ex_img2 = cv2.resize(ex_img2, (28, 28))
-ex_img2 = ex_img2.reshape(1, 28, 28)
-
-print (ex_img2.shape)
-
-digit_probabilities2 = digit_recognition_model.predict(ex_img2)
-
-print(digit_probabilities2)
-
-digit2 = np.argmax(digit_probabilities2)
-
-print("Classified digit is: " + str(digit2))
-
-
-cell_images = []
-'''
 # Iterate over each row and col of the Sudoku grid (which is just an image at this point)
 for row in range(9):
     for col in range(9):
@@ -125,46 +102,37 @@ for row in range(9):
 
         # Scrape the cell image from the board
         cell_image = final_processed_image[y:y+cell_size, x:x+cell_size]
-        print (cell_image.shape)
 
-        # Calculate the border thickness as a percentage of the image size
+        # Calculate the border thickness as percent of image size
         border_percentage = 0.1  # 1/10th of the image size
         border_thickness = int(min(cell_image.shape[:2]) * border_percentage)
 
-        # Calculate the crop dimensions
         x = border_thickness
         y = border_thickness
         width = cell_image.shape[1] - 2 * border_thickness
         height = cell_image.shape[0] - 2 * border_thickness
 
-        # Crop the image to remove the borders
+
+        # Crop the image to remove the four borders. 
+        # This is because they'll have traces of white (originally black) in them and will mess with the model
         cell_image = cell_image[y:y+height, x:x+width]
 
+        # Resize the cell image so that it is valid input format for the model (28x28 with each value from 0 to 1)
         cell_image = cv2.resize(cell_image, (28, 28))
-        print (cell_image.shape)
-        #min_value = np.min(cell_image)
-        #max_value = np.max(cell_image)
-
-
-        #converted_image = cv2.normalize(cell_image, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        cell_image = cell_image.astype('float32') / 255.0
         
-        #cell_image = cv2.cvtColor(cell_image, cv2.COLOR_RGB2GRAY)
-        #print(cell_image.shape)
-        #cell_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
-        #cell_image = cv2.adaptiveThreshold(cell_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-        cell_image = cell_image.reshape(1, 28, 28)
-        
-        print (cell_image.shape)
-        digit_probabilities = digit_recognition_model.predict(cell_image)
-        print (digit_probabilities)
-        digit = np.argmax(digit_probabilities)
-        print (digit)
-        cell_image = cell_image.reshape(28, 28, 1)
-        cv2.imshow("Cell Image", cell_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        cell_image = np.reshape(cell_image, (1, 28, 28, 1))
 
-        cell_images.append(cell_image)
+        digit = 0
+        # The model only works if there actually is a digit.
+        # As long as the average pixel value in the image is above 0.05, it's likely there's a digit (0 = black, 1 = white)
+        if (np.average(cell_image) > 0.05):
+            digit_probabilities = digit_recognition_model.predict(cell_image)
+            digit = np.argmax(digit_probabilities)
 
-cell_images = np.array(cell_images)
-'''
+        digits.append(digit)
+
+
+digits = np.array(digits)
+
+print (digits)
