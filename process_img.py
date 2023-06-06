@@ -4,7 +4,7 @@ from tensorflow import keras
 # At this stage, the image is in the same directory as this program
 # So we can load the image using opencv's imread() function.
 
-image = cv2.imread("sudokuimg2.jpg")
+image = cv2.imread("onlinesudoku3.jpg")
 
 # Next, we need to apply some noise reduction techniques to this image.
 # This is necessary in order for the contour-finding algorithm applied in later steps to be effective.
@@ -73,12 +73,14 @@ target_points = np.float32([[0, 0], [450, 0], [450, 450], [0, 450]])
 # Compute perspective transform matrix
 perspective_matrix = cv2.getPerspectiveTransform(corner_points, target_points)
 
+
 # Apply the perspective transform to the original image using the matrix and the specified dimensions
 final_processed_image = cv2.warpPerspective(image, perspective_matrix, (450, 450))
 
 final_processed_image = cv2.cvtColor(final_processed_image, cv2.COLOR_BGR2GRAY)
 
-_, final_processed_image = cv2.threshold(final_processed_image, 128, 255, cv2.THRESH_BINARY_INV)
+final_processed_image = cv2.threshold(final_processed_image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+
 
 cv2.imshow("Sudoku Grid Detection", final_processed_image)
 cv2.waitKey(0)
