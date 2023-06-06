@@ -4,7 +4,7 @@ from tensorflow import keras
 # At this stage, the image is in the same directory as this program
 # So we can load the image using opencv's imread() function.
 
-image = cv2.imread("onlinesudoku3.jpg")
+image = cv2.imread("onlinesudokuex.jpg")
 
 # Next, we need to apply some noise reduction techniques to this image.
 # This is necessary in order for the contour-finding algorithm applied in later steps to be effective.
