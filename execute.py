@@ -13,9 +13,12 @@ def main():
     solved_board = solve_puzzle.solvePuzzle(board.tolist())
 
     if (solved_board):
+        print ("\n\nFINAL SOLVED PUZZLE")
+        print ("____________________\n\n")
         print (np.array(solved_board))
+        print ("\n\n")
     else:
-        print ("This sudoku cannot be solved")
+        print ("This sudoku cannot be solved\n\n")
 
 
 if __name__ == "__main__":
