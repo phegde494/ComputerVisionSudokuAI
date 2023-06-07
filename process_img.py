@@ -144,6 +144,7 @@ def getBoardDigits(final_processed_image):
     
 
     digits = np.array(digits)
+    digits = digits.reshape(9, 9)
 
     return digits
 
