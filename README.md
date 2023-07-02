@@ -23,7 +23,8 @@ Finally, a sudoku solving algorithm utilizing backtracking is applied to the mat
 **See demo below:**
 
 
+https://github.com/phegde494/ComputerVisionSudokuAI/assets/48624928/961cd72e-81ec-4db3-9ba3-ee60244cc289
 
 
-https://github.com/phegde494/ComputerVisionSudokuAI/assets/48624928/3f41f34c-6799-4cef-8659-728a835feae6
+
 
