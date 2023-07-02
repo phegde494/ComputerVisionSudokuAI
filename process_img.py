@@ -30,9 +30,11 @@ def processImage(image):
 
     final_processed_image = transformImage(image, sudoku_border)
 
-    cv2.imshow("Sudoku Grid Detection", final_processed_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows() 
+    # Can uncomment the next three lines to test just this processing stage
+
+    #cv2.imshow("Sudoku Grid Detection", final_processed_image)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows() 
 
     return final_processed_image
 

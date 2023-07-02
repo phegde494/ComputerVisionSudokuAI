@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Computer Vision Sudoku AI</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Computer Vision Sudoku AI</h1>
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg, .jpeg, .png" required>
+        <button type="submit">Upload</button>
+    </form>
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% else %}
+        {% if sudoku_board %}
+            <h2>Solved Sudoku Board:</h2>
+            <div class="sudoku-board">
+                {% for row in sudoku_board %}
+                    <div class="sudoku-row">
+                        {% for cell in row %}
+                            <div class="sudoku-cell">{{ cell }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

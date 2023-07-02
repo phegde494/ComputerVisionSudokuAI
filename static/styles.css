@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #abceec;
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button[type="submit"] {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sudoku-board {
+    display: inline-block;
+    border: 1.5px solid #000000;
+    margin-top: 20px;
+}
+
+.sudoku-row {
+    display: flex;
+}
+
+.sudoku-cell {
+    flex: 1;
+    padding: 15px;
+    border: 1.5px solid #000000;
+    text-align: center;
+    font-weight: bold;
+}
