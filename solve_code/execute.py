@@ -1,5 +1,5 @@
-import process_img
-import solve_puzzle
+import solve_code.process_img as process_img
+import solve_code.solve_puzzle as solve_puzzle
 import numpy as np
 import cv2
 

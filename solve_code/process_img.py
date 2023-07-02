@@ -5,7 +5,7 @@ from tensorflow import keras
 def main():
     # At this stage, the image is in the same directory as this program
     # So we can load the image using opencv's imread() function.
-    image = cv2.imread("images/onlinesudokuex.jpg")
+    image = cv2.imread("../images/onlinesudokuex.jpg")
     board = getBoard(image)
 
     print(board)

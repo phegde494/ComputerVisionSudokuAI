@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from execute import main
+from solve_code.execute import main
 import numpy as np
 import os
 import shutil
